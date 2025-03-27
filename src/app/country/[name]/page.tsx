@@ -1,4 +1,5 @@
 "use client";
+
 import { gql, useQuery } from "@apollo/client";
 import client from "../../library/apollo";
 
@@ -20,8 +21,12 @@ const GET_COUNTRY_BY_NAME = gql`
   }
 `;
 
-export default function CountryPage({ params }: any) {
-  const { name } = params;
+import { useParams } from "next/navigation";
+
+export default function CountryPage() {
+  const params = useParams();
+  const name = decodeURIComponent(params.name as string);
+
   const { loading, error, data } = useQuery(GET_COUNTRY_BY_NAME, {
     variables: { name },
     client,

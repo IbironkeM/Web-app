@@ -3,6 +3,16 @@ import { useQuery, gql } from "@apollo/client";
 import { useState } from "react";
 import Link from "next/link";
 import client from "./library/apollo";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+const COLORS = ["#0088FE", "#FF8042"];
 
 const GET_COUNTRIES = gql`
   query {
@@ -78,7 +88,7 @@ export default function Home() {
               <td>
                 <input
                   type="checkbox"
-                  checked={selected.find((c: any) => c.cca3 === country.cca3)}
+                  checked={!!selected.find((c: any) => c.cca3 === country.cca3)}
                   onChange={() => toggleSelect(country)}
                 />
               </td>
@@ -90,27 +100,68 @@ export default function Home() {
       {selected.length === 2 && (
         <div className="comparison">
           <h2>Comparison</h2>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>{selected[0].name.common}</th>
-                <th>{selected[1].name.common}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Population</td>
-                <td>{selected[0].population.toLocaleString()}</td>
-                <td>{selected[1].population.toLocaleString()}</td>
-              </tr>
-              <tr>
-                <td>Area</td>
-                <td>{selected[0].area.toLocaleString()} km²</td>
-                <td>{selected[1].area.toLocaleString()} km²</td>
-              </tr>
-            </tbody>
-          </table>
+
+          <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+            <div>
+              <h3>Population</h3>
+              <ResponsiveContainer width={300} height={300}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      {
+                        name: selected[0].name.common,
+                        value: selected[0].population,
+                      },
+                      {
+                        name: selected[1].name.common,
+                        value: selected[1].population,
+                      },
+                    ]}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={100}
+                    label
+                  >
+                    {COLORS.map((color: any, index: any) => (
+                      <Cell key={index} fill={color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div>
+              <h3>Area</h3>
+              <ResponsiveContainer width={300} height={300}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      {
+                        name: selected[0].name.common,
+                        value: selected[0].area,
+                      },
+                      {
+                        name: selected[1].name.common,
+                        value: selected[1].area,
+                      },
+                    ]}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={100}
+                    label
+                  >
+                    {COLORS.map((color: any, index: any) => (
+                      <Cell key={index} fill={color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
       )}
     </main>

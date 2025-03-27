@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import "./globals.css";
 export const metadata = {
   title: "Country Explorer",
